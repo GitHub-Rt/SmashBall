@@ -79,14 +79,15 @@ public class BallControll : MonoBehaviour
             float moveX = Input.GetAxis("Horizontal");
             float moveZ = Input.GetAxis("Vertical");
 
-            if (moveX != 0 || moveZ != 0)
-            {
-                // 状態を移動に変更
-                Debug.Log("state : Move.");
-                state = PlayerControllerState.Move;
 
-                return;
-            }
+        float moveX = Input.GetAxis("Horizontal2");
+        float moveZ = Input.GetAxis("Vertical2");
+
+        if ( moveX != 0 || moveZ != 0 )
+        {
+            // 状態を移動に変更
+            Debug.Log("state : Move.");
+            state = PlayerControllerState.Move;
         }
         
     }
@@ -102,17 +103,11 @@ public class BallControll : MonoBehaviour
         Vector3 cameraForward = Vector3.Scale(cameraTransform.forward, new Vector3(1, 0, 1)).normalized;
 
         // 移動ベクトル計算
-        Vector3 moveZ = cameraForward * Input.GetAxis("Vertical") * moveSpeed;                // 前後
-        Vector3 moveX = cameraTransform.right * Input.GetAxis("Horizontal") * moveSpeed;     　// 左右
+        Vector3 moveZ = cameraForward * Input.GetAxis("Vertical2") * moveSpeed;                // 前後
 
         // 入力が行われていなかったら移動状態をやめる
         if (moveX == Vector3.zero && moveZ == Vector3.zero)
         {
-            // 状態を待機に遷移させる
-            state = PlayerControllerState.Idle;
-            Debug.Log("state : Idle.");
-
-            return;
         }
 
         // 移動ベクトル用意
@@ -120,6 +115,11 @@ public class BallControll : MonoBehaviour
 
         // 移動処理
         rb.velocity = moveDirection;
+
+        {
+            // 状態を待機に遷移させる
+            state = PlayerControllerState.Idle;
+        }
     }
 
 
@@ -168,16 +168,9 @@ public class BallControll : MonoBehaviour
 
         }
 
-
-        if(isAttack)
+        // 速度が一定以下になったら攻撃をやめる
         {
-            timer++;
-
-            // 速度が一定以下になったら攻撃をやめる
-            if (timer > MaxTime)
-            {
-                isAttack = false;
-                timer = 0;
+            isAttack = false;
 
                 // 状態を待機に変更
                 state = PlayerControllerState.Idle;
