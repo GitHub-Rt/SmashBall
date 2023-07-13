@@ -28,17 +28,23 @@ public class DamegeControl : MonoBehaviour
     {
         if (collision.gameObject == null)
         Debug.Log(collision.gameObject.name+":object not set");
-        Vector3 targetVelocity = collision.gameObject.GetComponent<Rigidbody>().velocity;
-        float targetLife = collision.gameObject.GetComponent<DamegeControl>().life_;
-        float targetAttack = collision.gameObject.GetComponent<DamegeControl>().attack_;
-        if (targetVelocity.magnitude < 3.0f)
-            return;
 
-        targetLife -= targetAttack * Mathf.Abs(Mathf.Sin(Vector3.Dot(targetVelocity, rb_.velocity)));
-        collision.gameObject.GetComponent<DamegeControl>().life_ = targetLife;
+        if(collision.gameObject.tag == "Player")
+        {
+            Vector3 targetVelocity = collision.gameObject.GetComponent<Rigidbody>().velocity;
+            float targetLife = collision.gameObject.GetComponent<DamegeControl>().life_;
+            float targetAttack = collision.gameObject.GetComponent<DamegeControl>().attack_;
+            if (targetVelocity.magnitude < 3.0f)
+                return;
+
+            targetLife -= targetAttack * Mathf.Abs(Mathf.Sin(Vector3.Dot(targetVelocity, rb_.velocity)));
+            collision.gameObject.GetComponent<DamegeControl>().life_ = targetLife;
 
 
-        Debug.Log(collision.gameObject.name + targetLife.ToString());
+            Debug.Log(collision.gameObject.name + targetLife.ToString());
+        }
+
+        
 
     }
 }

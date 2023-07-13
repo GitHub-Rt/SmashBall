@@ -11,7 +11,7 @@ public enum PlayerControllerState
 
 public class BallControll : MonoBehaviour
 {
-    
+
     // 移動に関する変数
     public float moveSpeed = 1.5f;          // 移動スピード                    
 
@@ -66,8 +66,6 @@ public class BallControll : MonoBehaviour
             // 攻撃状態に遷移するかどうか
             if (Input.GetButtonDown("buttonA") || Input.GetButtonDown("buttonB") || Input.GetButtonDown("buttonX") || Input.GetButtonDown("buttonY"))
             {
-                
-
                 // 状態を攻撃に変更
                 Debug.Log("state : Attack.");
                 state = PlayerControllerState.Attack;
@@ -79,19 +77,15 @@ public class BallControll : MonoBehaviour
             float moveX = Input.GetAxis("Horizontal");
             float moveZ = Input.GetAxis("Vertical");
 
+            if (moveX != 0 || moveZ != 0)
+            {
+                // 状態を移動に変更
+                Debug.Log("state : Move.");
+                state = PlayerControllerState.Move;
+            }
 
-        float moveX = Input.GetAxis("Horizontal2");
-        float moveZ = Input.GetAxis("Vertical2");
-
-        if ( moveX != 0 || moveZ != 0 )
-        {
-            // 状態を移動に変更
-            Debug.Log("state : Move.");
-            state = PlayerControllerState.Move;
         }
-        
     }
-
 
     // 移動処理
     void MovePlayer()
@@ -103,11 +97,18 @@ public class BallControll : MonoBehaviour
         Vector3 cameraForward = Vector3.Scale(cameraTransform.forward, new Vector3(1, 0, 1)).normalized;
 
         // 移動ベクトル計算
-        Vector3 moveZ = cameraForward * Input.GetAxis("Vertical2") * moveSpeed;                // 前後
+        Vector3 moveZ = cameraForward * Input.GetAxis("Vertical") * moveSpeed;                // 前後
+        Vector3 moveX = cameraTransform.right * Input.GetAxis("Horizontal") * moveSpeed;      // 左右
 
         // 入力が行われていなかったら移動状態をやめる
         if (moveX == Vector3.zero && moveZ == Vector3.zero)
         {
+            // 状態を待機に遷移させる
+            Debug.Log("state : Idle.");
+            state = PlayerControllerState.Idle;
+            
+
+            return;
         }
 
         // 移動ベクトル用意
@@ -115,11 +116,6 @@ public class BallControll : MonoBehaviour
 
         // 移動処理
         rb.velocity = moveDirection;
-
-        {
-            // 状態を待機に遷移させる
-            state = PlayerControllerState.Idle;
-        }
     }
 
 
@@ -169,16 +165,22 @@ public class BallControll : MonoBehaviour
         }
 
         // 速度が一定以下になったら攻撃をやめる
+        if (isAttack)
         {
-            isAttack = false;
+            timer++;
+
+            if (timer > MaxTime)
+            {
+                isAttack = false;
+                timer = 0;
 
                 // 状態を待機に変更
-                state = PlayerControllerState.Idle;
                 Debug.Log("state : Idle.");
+                state = PlayerControllerState.Idle;
             }
         }
 
-        
+
 
     }
 
