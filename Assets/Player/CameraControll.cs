@@ -19,7 +19,6 @@ public class CameraControll : MonoBehaviour
     void Update()
     {
         // targetの移動量分、自分（カメラ）も移動する
-        transform.position += targetObj.transform.position - targetPos;
         targetPos = targetObj.transform.position;
 
 
