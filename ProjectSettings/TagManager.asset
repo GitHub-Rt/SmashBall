@@ -8,6 +8,8 @@ TagManager:
   - Operation
   - Cursor
   - ReturnTitle
+  - Ground
+  - NextOperation
   layers:
   - Default
   - TransparentFX

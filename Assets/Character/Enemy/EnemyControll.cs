@@ -11,7 +11,6 @@ public class EnemyControll : MonoBehaviour
     private GameObject target_;
     private float attackSpeed_;
     private string tag_;
-    private bool isAttack_;
     private float attackLimit_;
     NavMeshAgent agent_;
     // Start is called before the first frame update
@@ -21,10 +20,14 @@ public class EnemyControll : MonoBehaviour
         agent_=GetComponent<NavMeshAgent>();
         tag_ = "Player";
         InvokeRepeating(nameof(Attack),3.0f, 5.0f);
-        InvokeRepeating(nameof(Move),0, 1.0f);
+        InvokeRepeating(nameof(Move),3.1f, 1.0f);
         InvokeRepeating(nameof(SetTarget),0, 4.0f);
         SetTarget();
 
+        //メッシュエージェントを停止
+        agent_.enabled = false;
+        //メッシュエージェントを3秒後に起動
+        Invoke(nameof(NavMeshAgentEnable), 3.0f);
         attackSpeed_ = 10;
         attackLimit_ = 5.0f;
     }
@@ -54,6 +57,7 @@ public class EnemyControll : MonoBehaviour
             position.x += x;
             position.z += z;
 
+
             agent_.destination = position;
         }
     }
@@ -64,12 +68,11 @@ public class EnemyControll : MonoBehaviour
        
         if(attackVec.magnitude<=attackLimit_)
         rb_.velocity += attackVec.normalized*attackSpeed_;
-        isAttack_ = false;
 
     }
 
-    //void ()
-    //{
-    //    isAttack_ = true;
-    //}
+    void NavMeshAgentEnable()
+    {
+        agent_.enabled = true;
+    }
 }

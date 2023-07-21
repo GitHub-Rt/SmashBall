@@ -26,15 +26,23 @@ public class ButtonCheck : MonoBehaviour
         {
             if(collision.tag == "GameStart")
             {
+                // プレイシーンへ
                 SceneManager.LoadScene("SampleScene");
             }
             else if(collision.tag == "Operation")
             {
+                // プレイシーン内の操作説明へ
                 SceneManager.LoadScene("OperationScene");
             }
             else if(collision.tag == "ReturnTitle")
             {
+                // タイトルシーンへ
                 SceneManager.LoadScene("TitleScene");
+            }
+            else if(collision.tag == "NextOperation")
+            {
+                // プレイシーン以外の操作説明へ
+                SceneManager.LoadScene("OperationScene2");
             }
             else
             {

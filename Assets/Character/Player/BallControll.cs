@@ -28,6 +28,8 @@ public class BallControll : MonoBehaviour
     private Transform cameraTransform;          // Main CameraのTransform情報
     public PlayerControllerState state;        // プレイヤーの行動ステート
 
+    [SerializeField] public GaugeController _gaugeController;  //使いたいゲージ操作クラス
+
     void Start()
     {
         // Main Cameraのオブジェクト情報を取得
@@ -36,6 +38,14 @@ public class BallControll : MonoBehaviour
 
 
         rb = this.GetComponent<Rigidbody>();
+        rb.constraints = RigidbodyConstraints.FreezeAll;
+        
+        //コントロール可能になるまで3秒遅延させる
+        Invoke(nameof(ControlEnable), 3.0f);
+
+
+        GameObject tmp = GameObject.Find("PowerGauge");
+        _gaugeController = tmp.GetComponent<GaugeController>();
     }
 
     void Update()
@@ -67,7 +77,7 @@ public class BallControll : MonoBehaviour
             if (Input.GetButtonDown("buttonA") || Input.GetButtonDown("buttonB") || Input.GetButtonDown("buttonX") || Input.GetButtonDown("buttonY"))
             {
                 // 状態を攻撃に変更
-                Debug.Log("state : Attack.");
+                //Debug.Log("state : Attack.");
                 state = PlayerControllerState.Attack;
 
                 return;
@@ -80,7 +90,7 @@ public class BallControll : MonoBehaviour
             if (moveX != 0 || moveZ != 0)
             {
                 // 状態を移動に変更
-                Debug.Log("state : Move.");
+                //Debug.Log("state : Move.");
                 state = PlayerControllerState.Move;
             }
 
@@ -104,7 +114,7 @@ public class BallControll : MonoBehaviour
         if (moveX == Vector3.zero && moveZ == Vector3.zero)
         {
             // 状態を待機に遷移させる
-            Debug.Log("state : Idle.");
+            //Debug.Log("state : Idle.");
             state = PlayerControllerState.Idle;
             
 
@@ -128,6 +138,7 @@ public class BallControll : MonoBehaviour
             // 動きを停止させる
             rb.velocity = Vector3.zero;
 
+            //
             powerMeter += powerMeterStep;
 
             // 最大値より上に行かないようにする
@@ -143,7 +154,7 @@ public class BallControll : MonoBehaviour
         if (Input.GetButtonUp("buttonA") || Input.GetButtonUp("buttonB") || Input.GetButtonUp("buttonX") || Input.GetButtonUp("buttonY"))
         {
             // パワーメーターの値を出力
-            Debug.Log("Now PowerMeter : " + powerMeter);
+            //Debug.Log("Now PowerMeter : " + powerMeter);
 
 
             // カメラの位置情報を取得
@@ -175,13 +186,20 @@ public class BallControll : MonoBehaviour
                 timer = 0;
 
                 // 状態を待機に変更
-                Debug.Log("state : Idle.");
+                //Debug.Log("state : Idle.");
                 state = PlayerControllerState.Idle;
             }
         }
 
+        //パワーゲージの初期値で更新
+        _gaugeController.UpdateGauge(powerMeter, Max_PowerMeter);   //ゲージを初期値で更新
+
+    }
 
 
+    void ControlEnable()
+    {
+        rb.constraints = RigidbodyConstraints.None;
     }
 
 }
